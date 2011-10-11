@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace EventUtilities
+namespace CommandLineArguments
 {
 	public static class CommandLineArgumentConfigurator
 	{

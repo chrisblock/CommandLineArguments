@@ -1,6 +1,6 @@
 using System;
 
-namespace EventUtilities
+namespace CommandLineArguments
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
 	public class CommandLineArgumentAttribute : Attribute

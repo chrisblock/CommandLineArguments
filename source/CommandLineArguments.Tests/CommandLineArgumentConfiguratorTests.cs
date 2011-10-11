@@ -2,7 +2,7 @@
 
 using NUnit.Framework;
 
-namespace EventUtilities.Tests
+namespace CommandLineArguments.Tests
 {
 	[TestFixture]
 	public class CommandLineArgumentConfiguratorTests

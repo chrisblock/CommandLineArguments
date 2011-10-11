@@ -1,4 +1,4 @@
-namespace EventUtilities.Tests
+namespace CommandLineArguments.Tests
 {
 	public class DuplicateAliasTestConfigurationObject
 	{
