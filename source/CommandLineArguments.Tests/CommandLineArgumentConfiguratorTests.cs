@@ -1,5 +1,7 @@
 ﻿using System;
 
+using CommandLineArguments.Tests.TestConfigurationObjects;
+
 using NUnit.Framework;
 
 namespace CommandLineArguments.Tests
@@ -268,6 +270,23 @@ namespace CommandLineArguments.Tests
 			Assert.That(config, Is.Not.Null);
 			Assert.That(config.Property, Is.EqualTo(value));
 			Assert.That(config.Property2, Is.EqualTo(value2));
+		}
+
+		[Test]
+		public void Configure_ComplexeProperties_ConfigurationObjectWithSetIntegerDecimalAndEnumProperty()
+		{
+			const int value = 42;
+			const decimal value2 = 4.35m;
+			const ConfigurationEnum value3 = ConfigurationEnum.OptionOne;
+
+			var args = new[] { String.Format("/p=\"{0}\"", value), "--p2", String.Format("{0}", value2) , "-p3", String.Format("{0}", value3)};
+
+			var config = CommandLineArgumentConfigurator.Configure<ComplexTestConfigurationObject>(args);
+
+			Assert.That(config, Is.Not.Null);
+			Assert.That(config.Property, Is.EqualTo(value));
+			Assert.That(config.Property2, Is.EqualTo(value2));
+			Assert.That(config.ConfigEnum, Is.EqualTo(value3));
 		}
 
 		[Test]

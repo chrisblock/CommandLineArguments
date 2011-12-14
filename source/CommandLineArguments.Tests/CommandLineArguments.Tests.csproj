@@ -47,10 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineArgumentConfiguratorTests.cs" />
-    <Compile Include="ComplexTestConfigurationObject.cs" />
-    <Compile Include="DuplicateAliasTestConfigurationObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestConfigurationObject.cs" />
+    <Compile Include="TestConfigurationObjects\ComplexTestConfigurationObject.cs" />
+    <Compile Include="TestConfigurationObjects\ConfigurationEnum.cs" />
+    <Compile Include="TestConfigurationObjects\DuplicateAliasTestConfigurationObject.cs" />
+    <Compile Include="TestConfigurationObjects\TestConfigurationObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -95,6 +95,34 @@ namespace CommandLineArguments
 			return result;
 		}
 
+		private static object ConvertValue(Type t, object value)
+		{
+			var type = UnwrapNullable(t);
+			object result = String.Format("{0}", value);
+
+			if (type == value.GetType())
+			{
+				result = value;
+			}
+			else if (type.IsEnum)
+			{
+				result = typeof(CommandLineArgumentConfigurator).GetMethod("ParseEnum", BindingFlags.Static | BindingFlags.NonPublic)
+					.MakeGenericMethod(type)
+					.Invoke(null, new [] { result });
+			}
+			else if (type.GetInterfaces().Contains(typeof(IConvertible)))
+			{
+				result = Convert.ChangeType(value, type);
+			}
+			// TODO: is this needed? the important ValueTypes are IConvertable anyway...
+			//else if (type.IsValueType)
+			//{
+			//    result = Convert.ChangeType(value, type);
+			//}
+
+			return result;
+		}
+
 		private static Type UnwrapNullable(Type type)
 		{
 			var result = type;
@@ -107,24 +135,15 @@ namespace CommandLineArguments
 			return result;
 		}
 
-		private static object ConvertValue(Type t, object value)
+		private static TEnum? ParseEnum<TEnum>(string value) where TEnum : struct 
 		{
-			var type = UnwrapNullable(t);
-			object result = String.Format("{0}", value);
+			TEnum? result = null;
 
-			if (type == value.GetType())
+			TEnum output;
+			if (Enum.TryParse(value, true, out output))
 			{
-				result = value;
+				result = output;
 			}
-			else if (type.GetInterfaces().Contains(typeof(IConvertible)))
-			{
-				result = Convert.ChangeType(value, type);
-			}
-			// TODO: is this needed? the important ValueTypes are IConvertable anyway...
-			//else if (type.IsValueType)
-			//{
-			//    result = Convert.ChangeType(value, type);
-			//}
 
 			return result;
 		}
