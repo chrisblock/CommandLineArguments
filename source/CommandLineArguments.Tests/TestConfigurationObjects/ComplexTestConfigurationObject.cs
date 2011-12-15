@@ -9,6 +9,9 @@ namespace CommandLineArguments.Tests.TestConfigurationObjects
 		public decimal? Property2 { get; set; }
 
 		[CommandLineArgument("p3", "prop3")]
-		public ConfigurationEnum? ConfigEnum { get; set; }
+		public ConfigurationEnum? Property3 { get; set; }
+
+		[CommandLineArgument("p4", "prop4")]
+		public DefaultableEnum Property4 { get; set; }
 	}
 }

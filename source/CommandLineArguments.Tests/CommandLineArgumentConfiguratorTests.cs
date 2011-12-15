@@ -286,7 +286,26 @@ namespace CommandLineArguments.Tests
 			Assert.That(config, Is.Not.Null);
 			Assert.That(config.Property, Is.EqualTo(value));
 			Assert.That(config.Property2, Is.EqualTo(value2));
-			Assert.That(config.ConfigEnum, Is.EqualTo(value3));
+			Assert.That(config.Property3, Is.EqualTo(value3));
+			Assert.That(config.Property4, Is.EqualTo(DefaultableEnum.Default));
+		}
+
+		[Test]
+		public void Configure_ComplexeProperties_ConfigurationObjectWithSetIntegerDecimalAndDefaultableEnumProperty()
+		{
+			const int value = 42;
+			const decimal value2 = 4.35m;
+			const DefaultableEnum value3 = DefaultableEnum.Property;
+
+			var args = new[] { String.Format("/p=\"{0}\"", value), "--p2", String.Format("{0}", value2), "-p4", String.Format("{0}", value3) };
+
+			var config = CommandLineArgumentConfigurator.Configure<ComplexTestConfigurationObject>(args);
+
+			Assert.That(config, Is.Not.Null);
+			Assert.That(config.Property, Is.EqualTo(value));
+			Assert.That(config.Property2, Is.EqualTo(value2));
+			Assert.That(config.Property3, Is.Null);
+			Assert.That(config.Property4, Is.EqualTo(value3));
 		}
 
 		[Test]
