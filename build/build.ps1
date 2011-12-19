@@ -1,5 +1,5 @@
 $baseDir = Resolve-Path(".")
-$outputFolder = Join-Path $baseDir "bin\"
+$outputFolder = Join-Path $baseDir "build-output\"
 $solution = Join-Path $baseDir "source\CommandLineArguments.sln"
 $windir = $env:windir
 
