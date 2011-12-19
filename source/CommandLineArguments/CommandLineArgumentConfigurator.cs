@@ -97,7 +97,8 @@ namespace CommandLineArguments
 
 		private static object ConvertValue(Type t, object value)
 		{
-			var type = UnwrapNullable(t);
+			Type type;
+			var wasNullable = TryUnwrapNullable(t, out type);
 			object result = String.Format("{0}", value);
 
 			if (type == value.GetType())
@@ -106,9 +107,10 @@ namespace CommandLineArguments
 			}
 			else if (type.IsEnum)
 			{
-				result = typeof(CommandLineArgumentConfigurator).GetMethod("ParseEnum", BindingFlags.Static | BindingFlags.NonPublic)
+				var methodName = wasNullable ? "ParseNullableEnum" : "ParseEnum";
+				result = typeof(CommandLineArgumentConfigurator).GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)
 					.MakeGenericMethod(type)
-					.Invoke(null, new [] { result });
+					.Invoke(null, new[] { result });
 			}
 			else if (type.GetInterfaces().Contains(typeof(IConvertible)))
 			{
@@ -123,21 +125,36 @@ namespace CommandLineArguments
 			return result;
 		}
 
-		private static Type UnwrapNullable(Type type)
+		private static bool TryUnwrapNullable(Type type, out Type nonNullableType)
 		{
-			var result = type;
+			var result = false;
+			nonNullableType = type;
 
 			if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>)))
 			{
-				result = type.GetGenericArguments().Single();
+				result = true;
+				nonNullableType = type.GetGenericArguments().Single();
 			}
 
 			return result;
 		}
 
-		private static TEnum? ParseEnum<TEnum>(string value) where TEnum : struct 
+		private static TEnum? ParseNullableEnum<TEnum>(string value) where TEnum : struct 
 		{
 			TEnum? result = null;
+
+			TEnum output;
+			if (Enum.TryParse(value, true, out output))
+			{
+				result = output;
+			}
+
+			return result;
+		}
+
+		private static TEnum ParseEnum<TEnum>(string value) where TEnum : struct
+		{
+			var result = default(TEnum);
 
 			TEnum output;
 			if (Enum.TryParse(value, true, out output))
