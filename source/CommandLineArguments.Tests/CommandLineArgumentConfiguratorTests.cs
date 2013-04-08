@@ -1,4 +1,6 @@
-﻿using System;
+﻿// ReSharper disable InconsistentNaming
+
+using System;
 
 using CommandLineArguments.Tests.TestConfigurationObjects;
 
@@ -306,6 +308,25 @@ namespace CommandLineArguments.Tests
 			Assert.That(config.Property2, Is.EqualTo(value2));
 			Assert.That(config.Property3, Is.Null);
 			Assert.That(config.Property4, Is.EqualTo(value3));
+		}
+
+		[Test]
+		public void Configure_ComplexeProperties_ConfigurationObjectWithSetIntegerDecimalAndEnumAndWithFlagArgumentPresentProperty()
+		{
+			const int value = 42;
+			const decimal value2 = 4.35m;
+			const ConfigurationEnum value3 = ConfigurationEnum.OptionOne;
+
+			var args = new[] { "-p5", String.Format("/p=\"{0}\"", value), "--p2", String.Format("{0}", value2), "-p3", String.Format("{0}", value3) };
+
+			var config = CommandLineArgumentConfigurator.Configure<ComplexTestConfigurationObject>(args);
+
+			Assert.That(config, Is.Not.Null);
+			Assert.That(config.Property, Is.EqualTo(value));
+			Assert.That(config.Property2, Is.EqualTo(value2));
+			Assert.That(config.Property3, Is.EqualTo(value3));
+			Assert.That(config.Property4, Is.EqualTo(DefaultableEnum.Default));
+			Assert.That(config.Property5, Is.True);
 		}
 
 		[Test]

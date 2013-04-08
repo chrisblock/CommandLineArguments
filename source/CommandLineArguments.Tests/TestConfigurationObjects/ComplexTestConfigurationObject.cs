@@ -13,5 +13,8 @@ namespace CommandLineArguments.Tests.TestConfigurationObjects
 
 		[CommandLineArgument("p4", "prop4")]
 		public DefaultableEnum Property4 { get; set; }
+
+		[CommandLineArgument("p5", "prop5", IsFlag = true)]
+		public bool Property5 { get; set; }
 	}
 }

@@ -19,7 +19,7 @@ namespace CommandLineArguments
 			while (enumerator.MoveNext())
 			{
 				// TODO: check the attribute for Default and IsFlag
-				var keyValuePair = enumerator.GetNextKeyValuePair();
+				var keyValuePair = enumerator.GetNextKeyValuePair(aliasDictionary);
 
 				if ((keyValuePair.Key != null) && (keyValuePair.Value != null))
 				{
@@ -41,7 +41,7 @@ namespace CommandLineArguments
 		{
 			var result = new Dictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>>();
 			var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-				.Select(x => new Tuple<PropertyInfo, CommandLineArgumentAttribute>(x, x.GetCustomAttributes(typeof(CommandLineArgumentAttribute), false).Cast<CommandLineArgumentAttribute>().SingleOrDefault()));
+				.Select(x => new Tuple<PropertyInfo, CommandLineArgumentAttribute>(x, x.GetAttributesOfType<CommandLineArgumentAttribute>(false).SingleOrDefault()));
 
 			foreach (var property in properties)
 			{
@@ -62,7 +62,7 @@ namespace CommandLineArguments
 			return result;
 		}
 
-		private static KeyValuePair<string, object> GetNextKeyValuePair(this IEnumerator enumerator)
+		private static KeyValuePair<string, object> GetNextKeyValuePair(this IEnumerator enumerator, IDictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>> aliasDictionary)
 		{
 			var result = new KeyValuePair<string, object>();
 
@@ -76,6 +76,8 @@ namespace CommandLineArguments
 				string key;
 				object value;
 
+				// TODO: check the attribute for Default and IsFlag
+
 				if (itemWithoutPrefix.Contains("="))
 				{
 					var keyValuePair = itemWithoutPrefix.Split('=');
@@ -84,9 +86,18 @@ namespace CommandLineArguments
 				}
 				else
 				{
-					enumerator.MoveNext();
 					key = itemWithoutPrefix;
-					value = RemoveQuotes(String.Format("{0}", enumerator.Current));
+
+					Tuple<PropertyInfo, CommandLineArgumentAttribute> tuple;
+					if (aliasDictionary.TryGetValue(key, out tuple) && (tuple.Item2.IsFlag == true))
+					{
+						value = true;
+					}
+					else
+					{
+						enumerator.MoveNext();
+						value = RemoveQuotes(String.Format("{0}", enumerator.Current));
+					}
 				}
 
 				result = new KeyValuePair<string, object>(key, value);
@@ -108,11 +119,11 @@ namespace CommandLineArguments
 			else if (type.IsEnum)
 			{
 				var methodName = wasNullable ? "ParseNullableEnum" : "ParseEnum";
-				result = typeof(CommandLineArgumentConfigurator).GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)
+				result = typeof (CommandLineArgumentConfigurator).GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)
 					.MakeGenericMethod(type)
 					.Invoke(null, new[] { result });
 			}
-			else if (type.GetInterfaces().Contains(typeof(IConvertible)))
+			else if (type.GetInterfaces().Contains(typeof (IConvertible)))
 			{
 				result = Convert.ChangeType(value, type);
 			}
@@ -130,7 +141,7 @@ namespace CommandLineArguments
 			var result = false;
 			nonNullableType = type;
 
-			if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>)))
+			if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof (Nullable<>)))
 			{
 				result = true;
 				nonNullableType = type.GetGenericArguments().Single();
@@ -167,17 +178,12 @@ namespace CommandLineArguments
 
 		private static string RemoveQuotes(string str)
 		{
-			var matchesDoubleQuotes = Regex.Match(str, @"^""([^""]+)""$");
-			var matchesSingleQuotes = Regex.Match(str, @"^'([^']+)'$");
+			var quotedString = Regex.Match(str, @"^([""'])([^\1]+)\1$");
 			var result = str;
 
-			if (matchesDoubleQuotes.Success)
+			if (quotedString.Success)
 			{
-				result = matchesDoubleQuotes.Groups[1].Value;
-			}
-			else if (matchesSingleQuotes.Success)
-			{
-				result = matchesSingleQuotes.Groups[1].Value;
+				result = quotedString.Groups[2].Value;
 			}
 
 			return result;
