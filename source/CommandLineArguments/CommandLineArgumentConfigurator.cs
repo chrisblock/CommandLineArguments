@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace CommandLineArguments
 {
@@ -11,99 +8,22 @@ namespace CommandLineArguments
 	{
 		public static T Configure<T>(params string [] commandLineArguments) where T : class, new()
 		{
-			var resultType = typeof (T);
-			var aliasDictionary = BuildAliasDictionary(resultType);
+			var aliasDictionary = AliasDictionary.Create<T>();
 			var configuration = new T();
 
-			var enumerator = commandLineArguments.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (var argument in new CommandLineArgumentEnumerable(commandLineArguments, aliasDictionary))
 			{
-				// TODO: check the attribute for Default and IsFlag
-				var keyValuePair = enumerator.GetNextKeyValuePair(aliasDictionary);
-
-				if ((keyValuePair.Key != null) && (keyValuePair.Value != null))
+				Tuple<PropertyInfo, CommandLineArgumentAttribute> property;
+				if (aliasDictionary.TryGetValue(argument.Key, out property))
 				{
-					Tuple<PropertyInfo, CommandLineArgumentAttribute> property;
-					if (aliasDictionary.TryGetValue(keyValuePair.Key, out property))
-					{
-						var propertyInfo = property.Item1;
-						var convertedValue = ConvertValue(propertyInfo.PropertyType, keyValuePair.Value);
+					var propertyInfo = property.Item1;
+					var convertedValue = ConvertValue(propertyInfo.PropertyType, argument.Value);
 
-						propertyInfo.SetValue(configuration, convertedValue, new object[0]);
-					}
+					propertyInfo.SetValue(configuration, convertedValue, new object[0]);
 				}
 			}
 
 			return configuration;
-		}
-
-		private static IDictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>> BuildAliasDictionary(IReflect type)
-		{
-			var result = new Dictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>>();
-			var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-				.Select(x => new Tuple<PropertyInfo, CommandLineArgumentAttribute>(x, x.GetAttributesOfType<CommandLineArgumentAttribute>(false).SingleOrDefault()));
-
-			foreach (var property in properties)
-			{
-				var propertyInfo = property.Item1;
-				var attribute = property.Item2;
-
-				foreach (var alias in attribute.Aliases)
-				{
-					if (result.ContainsKey(alias))
-					{
-						throw new ArgumentException(String.Format("Multiple properties cannot have the same command line alias:{0}\tAlias = '{1}'{0}\tProperty1 = '{2}'{0}\tProperty2 = '{3}'", Environment.NewLine, alias, result[alias], propertyInfo));
-					}
-
-					result[alias] = property;
-				}
-			}
-
-			return result;
-		}
-
-		private static KeyValuePair<string, object> GetNextKeyValuePair(this IEnumerator enumerator, IDictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>> aliasDictionary)
-		{
-			var result = new KeyValuePair<string, object>();
-
-			var item = String.Format("{0}", enumerator.Current);
-
-			var matches = Regex.Match(item, @"^(?:/|(?:--?))(.+)$");
-
-			if (matches.Success)
-			{
-				var itemWithoutPrefix = matches.Groups[1].Value;
-				string key;
-				object value;
-
-				// TODO: check the attribute for Default and IsFlag
-
-				if (itemWithoutPrefix.Contains("="))
-				{
-					var keyValuePair = itemWithoutPrefix.Split('=');
-					key = keyValuePair[0];
-					value = RemoveQuotes(keyValuePair[1]);
-				}
-				else
-				{
-					key = itemWithoutPrefix;
-
-					Tuple<PropertyInfo, CommandLineArgumentAttribute> tuple;
-					if (aliasDictionary.TryGetValue(key, out tuple) && (tuple.Item2.IsFlag == true))
-					{
-						value = true;
-					}
-					else
-					{
-						enumerator.MoveNext();
-						value = RemoveQuotes(String.Format("{0}", enumerator.Current));
-					}
-				}
-
-				result = new KeyValuePair<string, object>(key, value);
-			}
-
-			return result;
 		}
 
 		private static object ConvertValue(Type t, object value)
@@ -118,7 +38,10 @@ namespace CommandLineArguments
 			}
 			else if (type.IsEnum)
 			{
-				var methodName = wasNullable ? "ParseNullableEnum" : "ParseEnum";
+				var methodName = wasNullable
+					? "ParseNullableEnum"
+					: "ParseEnum";
+
 				result = typeof (CommandLineArgumentConfigurator).GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)
 					.MakeGenericMethod(type)
 					.Invoke(null, new[] { result });
@@ -127,7 +50,7 @@ namespace CommandLineArguments
 			{
 				result = Convert.ChangeType(value, type);
 			}
-			// TODO: is this needed? the important ValueTypes are IConvertable anyway...
+			// TODO: is this needed? the important ValueTypes are IConvertible anyway...
 			//else if (type.IsValueType)
 			//{
 			//    result = Convert.ChangeType(value, type);
@@ -171,19 +94,6 @@ namespace CommandLineArguments
 			if (Enum.TryParse(value, true, out output))
 			{
 				result = output;
-			}
-
-			return result;
-		}
-
-		private static string RemoveQuotes(string str)
-		{
-			var quotedString = Regex.Match(str, @"^([""'])([^\1]+)\1$");
-			var result = str;
-
-			if (quotedString.Success)
-			{
-				result = quotedString.Groups[2].Value;
 			}
 
 			return result;

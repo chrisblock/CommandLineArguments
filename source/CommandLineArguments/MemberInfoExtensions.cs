@@ -7,9 +7,9 @@ namespace CommandLineArguments
 {
 	public static class MemberInfoExtensions
 	{
-		public static IEnumerable<T> GetAttributesOfType<T>(this MemberInfo propertyInfo, bool inherit) where T : Attribute
+		public static IEnumerable<T> GetAttributesOfType<T>(this MemberInfo propertyInfo, bool inherit = false) where T : Attribute
 		{
-			return propertyInfo.GetCustomAttributes(typeof(T), inherit).Cast<T>();
+			return propertyInfo.GetCustomAttributes(typeof (T), inherit).Cast<T>();
 		}
 	}
 }

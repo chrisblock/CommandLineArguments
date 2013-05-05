@@ -21,6 +21,26 @@ namespace CommandLineArguments.Tests
 		}
 
 		[Test]
+		public void Configure_ArgumentNotMappedToPropertyAndPropertyWithDashPrefix_ConfigurationObjectWithSetProperty()
+		{
+			const string value = "value";
+			var args = new[] { "hello", "-p", value };
+
+			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
+
+			Assert.That(config, Is.Not.Null);
+			Assert.That(config.Property, Is.EqualTo(value));
+		}
+
+		[Test]
+		public void Configure_PropertyExpectingAValueButNoValueProvided_ThrowsException()
+		{
+			var args = new[] { "-p" };
+
+			Assert.That(() => CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args), Throws.ArgumentException);
+		}
+
+		[Test]
 		public void Configure_PropertyWithDashPrefix_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
