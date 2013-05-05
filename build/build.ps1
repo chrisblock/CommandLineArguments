@@ -17,6 +17,6 @@ if ([System.IO.Directory]::Exists($outputFolder)) {
 	[System.IO.Directory]::Delete($outputFolder, 1)
 }
 
-$build = $msbuild + " ""$solution"" " + $options + " /t:Build"
+$build = "$msbuild ""$solution"" /m $options /t:Build"
 
 Invoke-Expression $build
