@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace CommandLineArguments
 {
-	public class CommandLineArgumentEnumerator : IEnumerator<KeyValuePair<string, object>>
+	internal class CommandLineArgumentEnumerator : IEnumerator<KeyValuePair<string, object>>
 	{
 		private readonly IEnumerator<string> _argumentsEnumerator;
 		private readonly IDictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>> _aliasDictionary;
@@ -69,7 +69,7 @@ namespace CommandLineArguments
 						Tuple<PropertyInfo, CommandLineArgumentAttribute> tuple;
 						if (_aliasDictionary.TryGetValue(key, out tuple))
 						{
-							if (tuple.Item2.IsFlag == true)
+							if (tuple.Item2.IsFlag)
 							{
 								value = true;
 							}

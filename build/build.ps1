@@ -1,5 +1,4 @@
 $baseDir = Resolve-Path(".")
-$outputFolder = Join-Path $baseDir "build-output\"
 $solution = Join-Path $baseDir "source\CommandLineArguments.sln"
 $windir = $env:windir
 
@@ -11,12 +10,30 @@ $v4_net_version = (ls "$windir\Microsoft.NET\Framework\v4.0*").Name
 
 $msbuild = "$windir\Microsoft.NET\Framework\$v4_net_version\MSBuild.exe"
 
-$options = "/noconsolelogger /p:Configuration=Release /p:OutDir=""$outputFolder"""
+$options = "/m /noconsolelogger /p:Configuration=Release"
 
-if ([System.IO.Directory]::Exists($outputFolder)) {
-	[System.IO.Directory]::Delete($outputFolder, 1)
+$clean = "$msbuild $options /t:Clean ""$solution"""
+
+Invoke-Expression $clean
+
+if ($LastExitCode -ne 0) {
+	Write-Host "Error executing '$clean'." -ForegroundColor Red
+	Exit 1
 }
 
-$build = "$msbuild ""$solution"" /m $options /t:Build"
+$build = "$msbuild $options /t:Build ""$solution"""
 
 Invoke-Expression $build
+
+if ($LastExitCode -ne 0) {
+	Write-Host "Error executing '$build'." -ForegroundColor Red
+	Exit 1
+}
+
+$nuget = Join-Path $baseDir "tools\NuGet\nuget.exe"
+
+$project = Join-Path $baseDir "source\CommandLineArguments\CommandLineArguments.csproj"
+
+$package = "$nuget pack $project -Prop Configuration=Release"
+
+Invoke-Expression $package

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿// ReSharper disable InconsistentNaming
+
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -10,7 +12,7 @@ namespace CommandLineArguments.Tests
 		[Test]
 		public void GetAttributesOfType_TestFixtureAttribute_ReturnsSingleAttribute()
 		{
-			var attributes = GetType().GetAttributesOfType<TestFixtureAttribute>(false).ToList();
+			var attributes = GetType().GetAttributesOfType<TestFixtureAttribute>().ToList();
 
 			Assert.That(attributes, Is.Not.Empty);
 			Assert.That(attributes.Count(), Is.EqualTo(1));
@@ -19,7 +21,7 @@ namespace CommandLineArguments.Tests
 		[Test]
 		public void GetAttributesOfType_CommandLineArgumentAttribute_ReturnsEmpty()
 		{
-			var attributes = GetType().GetAttributesOfType<CommandLineArgumentAttribute>(false).ToList();
+			var attributes = GetType().GetAttributesOfType<CommandLineArgumentAttribute>().ToList();
 
 			Assert.That(attributes, Is.Empty);
 		}

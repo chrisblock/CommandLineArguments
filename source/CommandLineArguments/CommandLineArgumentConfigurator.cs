@@ -6,7 +6,11 @@ namespace CommandLineArguments
 {
 	public static class CommandLineArgumentConfigurator
 	{
-		public static T Configure<T>(params string [] commandLineArguments) where T : class, new()
+		private static readonly MethodInfo GenericParseNullableEnumInfo = ReflectionHelper.GetMethodInfo(() => ParseNullableEnum<int>(null));
+		private static readonly MethodInfo GenericParseEnumInfo = ReflectionHelper.GetMethodInfo(() => ParseEnum<int>(null));
+
+		public static T Configure<T>(params string[] commandLineArguments)
+			where T : class, new()
 		{
 			var aliasDictionary = AliasDictionary.Create<T>();
 			var configuration = new T();
@@ -38,11 +42,11 @@ namespace CommandLineArguments
 			}
 			else if (type.IsEnum)
 			{
-				var methodName = wasNullable
-					? "ParseNullableEnum"
-					: "ParseEnum";
+				var methodInfo = wasNullable
+					? GenericParseNullableEnumInfo
+					: GenericParseEnumInfo;
 
-				result = typeof (CommandLineArgumentConfigurator).GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic)
+				result = methodInfo
 					.MakeGenericMethod(type)
 					.Invoke(null, new[] { result });
 			}

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace CommandLineArguments
 {
-	public class AliasDictionary : IDictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>>
+	internal class AliasDictionary : IDictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>>
 	{
 		private readonly IDictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>> _dictionary;
 

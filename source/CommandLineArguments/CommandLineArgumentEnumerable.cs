@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace CommandLineArguments
 {
-	public class CommandLineArgumentEnumerable : IEnumerable<KeyValuePair<string, object>>
+	internal class CommandLineArgumentEnumerable : IEnumerable<KeyValuePair<string, object>>
 	{
 		private readonly IEnumerable<string> _arguments;
 		private readonly IDictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>> _aliasDictionary;

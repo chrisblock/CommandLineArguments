@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace CommandLineArguments
 {
-	public static class MemberInfoExtensions
+	internal static class MemberInfoExtensions
 	{
 		public static IEnumerable<T> GetAttributesOfType<T>(this MemberInfo propertyInfo, bool inherit = false) where T : Attribute
 		{
