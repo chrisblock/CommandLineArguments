@@ -18,6 +18,7 @@ namespace CommandLineArguments
 			foreach (var argument in new CommandLineArgumentEnumerable(commandLineArguments, aliasDictionary))
 			{
 				Tuple<PropertyInfo, CommandLineArgumentAttribute> property;
+
 				if (aliasDictionary.TryGetValue(argument.Key, out property))
 				{
 					var propertyInfo = property.Item1;

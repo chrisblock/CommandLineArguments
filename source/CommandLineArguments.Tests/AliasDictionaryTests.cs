@@ -1,6 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +6,8 @@ using System.Reflection;
 using CommandLineArguments.Tests.TestConfigurationObjects;
 
 using NUnit.Framework;
+
+// ReSharper disable InconsistentNaming
 
 namespace CommandLineArguments.Tests
 {
@@ -23,14 +23,73 @@ namespace CommandLineArguments.Tests
 		}
 
 		[Test]
-		public void Count_IsEqualToNumberOfPropertiesOnType()
+		public void Create_Null_ThrowsArgumentNullException()
 		{
-			var expected = typeof (ComplexTestConfigurationObject).GetProperties()
+			Assert.That(() => AliasDictionary.Create(null), Throws.InstanceOf<ArgumentNullException>());
+		}
+
+		[Test]
+		public void Create_ObjectWithDuplicateAliases_ThrowsArgumentException()
+		{
+			Assert.That(() => AliasDictionary.Create(typeof(DuplicateAliasTestConfigurationObject)), Throws.ArgumentException);
+		}
+
+		[Test]
+		public void Count_IsEqualTo_TotalNumberOfAliasesOnPropertiesOnType()
+		{
+			var expected = typeof(ComplexTestConfigurationObject).GetProperties()
 				.SelectMany(x => x.GetAttributesOfType<CommandLineArgumentAttribute>())
 				.SelectMany(x => x.Aliases)
-				.ToList();
+				.Count();
 
-			Assert.That(_dictionary.Count, Is.EqualTo(expected.Count));
+			Assert.That(_dictionary, Has.Count.EqualTo(expected));
+		}
+
+		[Test]
+		public void IsReadOnly_ReturnsFalse()
+		{
+			Assert.That(_dictionary.IsReadOnly, Is.False);
+		}
+
+		[Test]
+		public void Keys_ReturnsCollectionOfAliases()
+		{
+			var expected = typeof(ComplexTestConfigurationObject).GetProperties()
+				.SelectMany(x => x.GetAttributesOfType<CommandLineArgumentAttribute>())
+				.SelectMany(x => x.Aliases)
+				.OrderBy(x => x);
+
+			var keys = _dictionary.Keys.OrderBy(x => x);
+
+			Assert.That(keys, Is.EquivalentTo(expected));
+		}
+
+		[Test]
+		public void Values_ReturnsCollectionOfValues()
+		{
+			var expected = typeof(ComplexTestConfigurationObject).GetProperties()
+				.SelectMany(x => x.GetAttributesOfType<CommandLineArgumentAttribute>(), (property, attribute) => new { Property = property, Attribute = attribute })
+				.SelectMany(x => x.Attribute.Aliases, (x, alias) => new Tuple<PropertyInfo, CommandLineArgumentAttribute>(x.Property, x.Attribute))
+				.OrderBy(x => x.Item1.Name);
+
+			var keys = _dictionary.Values.OrderBy(x => x.Item1.Name);
+
+			Assert.That(keys, Is.EquivalentTo(expected));
+		}
+
+		[Test]
+		public void GetEnumerator_ReturnsEnumerator_HasCorrectNumberOfRecords()
+		{
+			var enumerator = _dictionary.GetEnumerator();
+
+			var count = 0;
+
+			while (enumerator.MoveNext())
+			{
+				count++;
+			}
+
+			Assert.That(count, Is.EqualTo(_dictionary.Count));
 		}
 	}
 }

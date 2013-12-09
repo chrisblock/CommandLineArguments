@@ -95,7 +95,7 @@ namespace CommandLineArguments
 
 		private static string RemoveQuotes(string str)
 		{
-			var quotedString = Regex.Match(str, @"^([""'])([^\1]+)\1$");
+			var quotedString = Regex.Match(str, @"^([""'])([^\1]*)\1$");
 			var result = str;
 
 			if (quotedString.Success)
@@ -142,8 +142,12 @@ namespace CommandLineArguments
 		{
 			if (disposing)
 			{
+				// dispose managed resources
+
 				_argumentsEnumerator.Dispose();
 			}
+
+			// dispose native resources
 		}
 	}
 }

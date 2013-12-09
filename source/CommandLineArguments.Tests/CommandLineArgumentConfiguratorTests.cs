@@ -1,10 +1,10 @@
-﻿// ReSharper disable InconsistentNaming
-
-using System;
+﻿using System;
 
 using CommandLineArguments.Tests.TestConfigurationObjects;
 
 using NUnit.Framework;
+
+// ReSharper disable InconsistentNaming
 
 namespace CommandLineArguments.Tests
 {
@@ -113,6 +113,18 @@ namespace CommandLineArguments.Tests
 		}
 
 		[Test]
+		public void Configure_SingleQuotedEmptyString_ConfigurationObjectWithSetProperty()
+		{
+			var value = String.Empty;
+			var args = new[] { "-p", String.Format("'{0}'", value) };
+
+			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
+
+			Assert.That(config, Is.Not.Null);
+			Assert.That(config.Property, Is.EqualTo(value));
+		}
+
+		[Test]
 		public void Configure_SingleQuotedPropertyWithDashPrefix_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
@@ -177,6 +189,18 @@ namespace CommandLineArguments.Tests
 		{
 			const string value = "value";
 			var args = new[] { string.Format("/p='{0}'", value) };
+
+			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
+
+			Assert.That(config, Is.Not.Null);
+			Assert.That(config.Property, Is.EqualTo(value));
+		}
+
+		[Test]
+		public void Configure_DoubleQuotedEmptyString_ConfigurationObjectWithSetProperty()
+		{
+			var value = String.Empty;
+			var args = new[] { "-p", String.Format("\"{0}\"", value) };
 
 			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
 

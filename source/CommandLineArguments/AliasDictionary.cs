@@ -12,6 +12,11 @@ namespace CommandLineArguments
 
 		public static AliasDictionary Create(Type type)
 		{
+			if (type == null)
+			{
+				throw new ArgumentNullException("type");
+			}
+
 			var result = new Dictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>>();
 			var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
 				.Select(x => new Tuple<PropertyInfo, CommandLineArgumentAttribute>(x, x.GetAttributesOfType<CommandLineArgumentAttribute>().SingleOrDefault()));

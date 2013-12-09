@@ -1,8 +1,8 @@
-﻿// ReSharper disable InconsistentNaming
-
-using System.Linq;
+﻿using System.Linq;
 
 using NUnit.Framework;
+
+// ReSharper disable InconsistentNaming
 
 namespace CommandLineArguments.Tests
 {

@@ -45,6 +45,7 @@
     <Compile Include="CommandLineArgumentConfiguratorTests.cs" />
     <Compile Include="MemberInfoExtensionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionHelperTests.cs" />
     <Compile Include="TestConfigurationObjects\ComplexTestConfigurationObject.cs" />
     <Compile Include="TestConfigurationObjects\ConfigurationEnum.cs" />
     <Compile Include="TestConfigurationObjects\DefaultableEnum.cs" />
