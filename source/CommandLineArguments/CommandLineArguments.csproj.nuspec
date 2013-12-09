@@ -6,7 +6,7 @@
 		<title>$title$</title>
 		<authors>$author$</authors>
 		<owners>$author$</owners>
-		<projectUrl>https://github.com/chrisblock/Changes</projectUrl>
+		<projectUrl>https://github.com/chrisblock/CommandLineArguments</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>$description$</description>
 		<releaseNotes>Switched the implementation to provide an enumerable for the consumption of the configurator.</releaseNotes>
