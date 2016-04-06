@@ -80,7 +80,7 @@ namespace CommandLineArguments.Tests
 		public void Configure_PropertyWithSingleDashAndEqualsSign_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
-			var args = new[] { string.Format("-p={0}", value) };
+			var args = new[] { String.Format("-p={0}", value) };
 
 			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
 
@@ -92,7 +92,7 @@ namespace CommandLineArguments.Tests
 		public void Configure_PropertyWithDoubleDashAndEqualsSign_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
-			var args = new[] { string.Format("--p={0}", value) };
+			var args = new[] { String.Format("--p={0}", value) };
 
 			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
 
@@ -104,7 +104,7 @@ namespace CommandLineArguments.Tests
 		public void Configure_PropertyWithForwardSlashAndEqualsSign_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
-			var args = new[] { string.Format("/p={0}", value) };
+			var args = new[] { String.Format("/p={0}", value) };
 
 			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
 
@@ -164,7 +164,7 @@ namespace CommandLineArguments.Tests
 		public void Configure_SingleQuotedPropertyWithSingleDashAndEqualsSign_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
-			var args = new[] { string.Format("-p='{0}'", value) };
+			var args = new[] { String.Format("-p='{0}'", value) };
 
 			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
 
@@ -176,7 +176,7 @@ namespace CommandLineArguments.Tests
 		public void Configure_SingleQuotedPropertyWithDoubleDashAndEqualsSign_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
-			var args = new[] { string.Format("--p='{0}'", value) };
+			var args = new[] { String.Format("--p='{0}'", value) };
 
 			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
 
@@ -188,7 +188,7 @@ namespace CommandLineArguments.Tests
 		public void Configure_SingleQuotedPropertyWithForwardSlashAndEqualsSign_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
-			var args = new[] { string.Format("/p='{0}'", value) };
+			var args = new[] { String.Format("/p='{0}'", value) };
 
 			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
 
@@ -260,7 +260,7 @@ namespace CommandLineArguments.Tests
 		public void Configure_DoubleQuotedPropertyWithDoubleDashAndEqualsSign_ConfigurationObjectWithSetProperty()
 		{
 			const string value = "value";
-			var args = new[] { string.Format("--p=\"{0}\"", value) };
+			var args = new[] { String.Format("--p=\"{0}\"", value) };
 
 			var config = CommandLineArgumentConfigurator.Configure<TestConfigurationObject>(args);
 

@@ -36,7 +36,7 @@ namespace CommandLineArguments
 			{
 				var item = String.Format("{0}", _argumentsEnumerator.Current);
 
-				var regex = new Regex(@"^(?:/|(?:--?))(.+)$");
+				var regex = new Regex(@"^(?:/|(?:--?))\b(.+)$");
 
 				while ((regex.IsMatch(item) == false) && _argumentsEnumerator.MoveNext())
 				{

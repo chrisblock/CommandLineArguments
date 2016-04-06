@@ -34,7 +34,7 @@ namespace CommandLineArguments.Tests
 		[Test]
 		public void GetMethodInfo_TwoGenericParameters_StringContains_ReturnsEqualsContainsMethodInfo()
 		{
-			var expected = typeof(String).GetMethod("Contains", BindingFlags.Instance | BindingFlags.Public);
+			var expected = typeof (string).GetMethod("Contains", BindingFlags.Instance | BindingFlags.Public);
 			var actual = ReflectionHelper.GetMethodInfo((string s) => s.Contains(null));
 
 			Assert.That(actual, Is.EqualTo(expected));
