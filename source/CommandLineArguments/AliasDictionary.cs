@@ -19,7 +19,7 @@ namespace CommandLineArguments
 
 			var result = new Dictionary<string, Tuple<PropertyInfo, CommandLineArgumentAttribute>>();
 			var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-				.Select(x => new Tuple<PropertyInfo, CommandLineArgumentAttribute>(x, x.GetAttributesOfType<CommandLineArgumentAttribute>().SingleOrDefault()));
+				.Select(x => new Tuple<PropertyInfo, CommandLineArgumentAttribute>(x, x.GetCustomAttributes<CommandLineArgumentAttribute>().SingleOrDefault()));
 
 			foreach (var property in properties)
 			{

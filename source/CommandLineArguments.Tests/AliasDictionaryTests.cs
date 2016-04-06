@@ -38,7 +38,7 @@ namespace CommandLineArguments.Tests
 		public void Count_IsEqualTo_TotalNumberOfAliasesOnPropertiesOnType()
 		{
 			var expected = typeof(ComplexTestConfigurationObject).GetProperties()
-				.SelectMany(x => x.GetAttributesOfType<CommandLineArgumentAttribute>())
+				.SelectMany(x => x.GetCustomAttributes<CommandLineArgumentAttribute>())
 				.SelectMany(x => x.Aliases)
 				.Count();
 
@@ -55,7 +55,7 @@ namespace CommandLineArguments.Tests
 		public void Keys_ReturnsCollectionOfAliases()
 		{
 			var expected = typeof(ComplexTestConfigurationObject).GetProperties()
-				.SelectMany(x => x.GetAttributesOfType<CommandLineArgumentAttribute>())
+				.SelectMany(x => x.GetCustomAttributes<CommandLineArgumentAttribute>())
 				.SelectMany(x => x.Aliases)
 				.OrderBy(x => x);
 
@@ -68,7 +68,7 @@ namespace CommandLineArguments.Tests
 		public void Values_ReturnsCollectionOfValues()
 		{
 			var expected = typeof(ComplexTestConfigurationObject).GetProperties()
-				.SelectMany(x => x.GetAttributesOfType<CommandLineArgumentAttribute>(), (property, attribute) => new { Property = property, Attribute = attribute })
+				.SelectMany(x => x.GetCustomAttributes<CommandLineArgumentAttribute>(), (property, attribute) => new { Property = property, Attribute = attribute })
 				.SelectMany(x => x.Attribute.Aliases, (x, alias) => new Tuple<PropertyInfo, CommandLineArgumentAttribute>(x.Property, x.Attribute))
 				.OrderBy(x => x.Item1.Name);
 

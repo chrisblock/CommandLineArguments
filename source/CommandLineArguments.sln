@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineArguments", "CommandLineArguments\CommandLineArguments.csproj", "{AC946429-1317-44AB-A860-2CAF27CBEA8A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineArguments.Tests", "CommandLineArguments.Tests\CommandLineArguments.Tests.csproj", "{1B97E54A-8D8E-46A1-9660-52D25A2C63E4}"
