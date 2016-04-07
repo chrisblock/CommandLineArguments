@@ -31,7 +31,19 @@ namespace CommandLineArguments.Tests
 		[Test]
 		public void Create_ObjectWithDuplicateAliases_ThrowsArgumentException()
 		{
-			Assert.That(() => AliasDictionary.Create(typeof(DuplicateAliasTestConfigurationObject)), Throws.ArgumentException);
+			Assert.That(() => AliasDictionary.Create(typeof (DuplicateAliasTestConfigurationObject)), Throws.ArgumentException);
+		}
+
+		[Test]
+		public void Create_ObjectWithPropertiesThatAreNotMarked_DoesNotThrow()
+		{
+			Assert.That(() => AliasDictionary.Create(typeof (PropertiesNotMarkedAsCommandLineArgumentsConfigurationObject)), Throws.Nothing);
+		}
+
+		[Test]
+		public void Create_ObjectWithGetOnlyPropertiesThatAreNotMarked_DoesNotThrow()
+		{
+			Assert.That(() => AliasDictionary.Create(typeof (GetOnlyPropertyNotMarkedAsCommandLineArgumentsConfigurationObject)), Throws.Nothing);
 		}
 
 		[Test]

@@ -1,18 +1,14 @@
 $baseDir = Resolve-Path(".")
 $solution = Join-Path $baseDir "source\CommandLineArguments.sln"
-$windir = $env:windir
+$msbuild = Join-Path "${env:ProgramFiles(x86)}" "MSBuild\14.0\bin\msbuild.exe"
 
-if((ls "$windir\Microsoft.NET\Framework\v4.0*") -eq $null ) {
+if (!(Test-Path $msbuild)) {
 	throw "Building requires .NET 4.0, which doesn't appear to be installed on this machine."
 }
 
-$v4_net_version = (ls "$windir\Microsoft.NET\Framework\v4.0*").Name
+$options = "/m /nologo /noconsolelogger /p:Configuration=Release"
 
-$msbuild = "$windir\Microsoft.NET\Framework\$v4_net_version\MSBuild.exe"
-
-$options = "/m /noconsolelogger /p:Configuration=Release"
-
-$clean = "$msbuild $options /t:Clean ""$solution"""
+$clean = "& ""$msbuild"" $options /t:Clean ""$solution"""
 
 Invoke-Expression $clean
 
@@ -21,7 +17,7 @@ if ($LastExitCode -ne 0) {
 	Exit 1
 }
 
-$build = "$msbuild $options /t:Build ""$solution"""
+$build = "& ""$msbuild"" $options /t:Build ""$solution"""
 
 Invoke-Expression $build
 

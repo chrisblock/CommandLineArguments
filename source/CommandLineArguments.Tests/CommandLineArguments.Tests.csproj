@@ -52,6 +52,8 @@
     <Compile Include="TestConfigurationObjects\ConfigurationEnum.cs" />
     <Compile Include="TestConfigurationObjects\DefaultableEnum.cs" />
     <Compile Include="TestConfigurationObjects\DuplicateAliasTestConfigurationObject.cs" />
+    <Compile Include="TestConfigurationObjects\GetOnlyPropertyNotMarkedAsCommandLineArgumentsConfigurationObject.cs" />
+    <Compile Include="TestConfigurationObjects\PropertiesNotMarkedAsCommandLineArgumentsConfigurationObject.cs" />
     <Compile Include="TestConfigurationObjects\TestConfigurationObject.cs" />
   </ItemGroup>
   <ItemGroup>
